@@ -4,7 +4,7 @@
 
 ## Overview
 
-GuardianCTI is a research and engineering project that builds an AI-driven Cloud Security Posture Management (CSPM) system tailored to healthcare organizations. Unlike traditional rule-based CSPM tools, HealthShield-AI continuously ingests threat intelligence feeds and correlates them with live cloud configuration data to detect, prioritize, and recommend remediation for security misconfigurations that put Protected Health Information (PHI) and HIPAA compliance at risk.
+GuardianCTI is a research and engineering project that builds an AI-driven Cloud Security Posture Management (CSPM) system tailored to healthcare organizations. Unlike traditional rule-based CSPM tools, GuardianCTI continuously ingests threat intelligence feeds and correlates them with live cloud configuration data to detect, prioritize, and recommend remediation for security misconfigurations that put Protected Health Information (PHI) and HIPAA compliance at risk.
 
 ## Problem Statement
 
