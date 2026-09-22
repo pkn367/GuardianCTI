@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  GuardianCTI target environment. A deliberately misconfigured mock healthcare
+  workload used as the assessment subject. Costs approximately zero while idle:
+  empty S3 buckets, one security group, one Lambda that is never invoked.
+  DO NOT put real data in this stack. Deploy in us-east-1 in the Learner Lab.
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Pick the default VPC in the Learner Lab.
+  NamePrefix:
+    Type: String
+    Default: vit-ehr
+    Description: Prefix for resource names. Must be globally unique for S3.
+  CreateIamPolicy:
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+    Description: >
+      Set true only if your Learner Lab permits creating customer managed IAM
+      policies. It adds an intentionally over-permissive policy for check IAM.1.
+
+Conditions:
+  WantIamPolicy: !Equals [!Ref CreateIamPolicy, "true"]
+
+Resources:
+
+  # Fails S3.1 to S3.4: no encryption, no versioning, no access logging.
+  # Public access block is left to the account default, which the collector reads.
+  PatientRecordsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub "${NamePrefix}-patient-records-${AWS::AccountId}"
+      Tags:
+        - Key: DataClassification
+          Value: PHI
+        - Key: Workload
+          Value: EHR
+
+  # The control case. Passes S3.1, S3.2 and S3.3 so the scanner is visibly
+  # discriminating rather than failing everything it touches.
+  MedicalImagingBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub "${NamePrefix}-medical-imaging-${AWS::AccountId}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: DataClassification
+          Value: PHI
+
+  # Fails EC2.1 and EC2.2: SSH, MySQL and all protocols open to the internet.
+  ExposedAppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: GuardianCTI target - intentionally over-permissive
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: SSH open to world
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+          Description: MySQL open to world
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: All protocols open to world
+      Tags:
+        - Key: Name
+          Value: !Sub "${NamePrefix}-app-sg"
+
+  # Fails LAMBDA.1: a database password sitting in plaintext environment config.
+  IngestFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${NamePrefix}-ingest"
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Timeout: 10
+      Environment:
+        Variables:
+          DB_PASSWORD: "hunter2-do-not-do-this"
+          DB_HOST: "ehr-postgres.internal"
+      Code:
+        ZipFile: |
+          def handler(event, context):
+              return {"statusCode": 200, "body": "mock EHR ingest endpoint"}
+
+  OverPermissivePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: WantIamPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${NamePrefix}-HospitalAdminPolicy"
+      Description: GuardianCTI target - intentionally grants full admin
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "*"
+            Resource: "*"
+
+Outputs:
+  PatientRecordsBucket:
+    Value: !Ref PatientRecordsBucket
+  MedicalImagingBucket:
+    Value: !Ref MedicalImagingBucket
+  SecurityGroupId:
+    Value: !Ref ExposedAppSecurityGroup
+  NextStep:
+    Value: "Run: python -m guardian.pipeline --region us-east-1"

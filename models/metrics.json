@@ -1,0 +1,45 @@
+{
+  "accuracy": 0.844,
+  "macro_f1": 0.8426,
+  "per_class": {
+    "Critical": 0.861,
+    "High": 0.792,
+    "Low": 0.863,
+    "Medium": 0.855
+  },
+  "top_features": [
+    [
+      "threat_pressure",
+      0.2025
+    ],
+    [
+      "phi",
+      0.2025
+    ],
+    [
+      "exposure",
+      0.1946
+    ],
+    [
+      "base_severity",
+      0.1826
+    ],
+    [
+      "evidence_size",
+      0.0914
+    ],
+    [
+      "attack_count",
+      0.0279
+    ],
+    [
+      "svc_kms",
+      0.0191
+    ],
+    [
+      "axis_C",
+      0.0175
+    ]
+  ],
+  "train_size": 3000
+}
