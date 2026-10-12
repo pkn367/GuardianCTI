@@ -1,0 +1,85 @@
+{
+  "dataset": "WUSTL-EHMS-2020",
+  "label_column": "Label",
+  "classes": [
+    "0",
+    "1"
+  ],
+  "train_rows": 12238,
+  "test_rows": 4080,
+  "features_used": 36,
+  "accuracy": 0.9017,
+  "macro_f1": 0.804,
+  "macro_precision": 0.7737,
+  "macro_recall": 0.8493,
+  "confusion_matrix": [
+    [
+      3280,
+      288
+    ],
+    [
+      113,
+      399
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "0",
+    "1"
+  ],
+  "per_class": {
+    "0": {
+      "precision": 0.967,
+      "recall": 0.919,
+      "f1-score": 0.942,
+      "support": 3568.0
+    },
+    "1": {
+      "precision": 0.581,
+      "recall": 0.779,
+      "f1-score": 0.666,
+      "support": 512.0
+    }
+  },
+  "top_features": [
+    [
+      "DIntPkt",
+      0.1626
+    ],
+    [
+      "DstJitter",
+      0.1445
+    ],
+    [
+      "SrcLoad",
+      0.0819
+    ],
+    [
+      "Load",
+      0.0731
+    ],
+    [
+      "Rate",
+      0.0702
+    ],
+    [
+      "SIntPkt",
+      0.067
+    ],
+    [
+      "Dur",
+      0.0643
+    ],
+    [
+      "DstLoad",
+      0.0639
+    ],
+    [
+      "Packet_num",
+      0.062
+    ],
+    [
+      "SrcJitter",
+      0.0464
+    ]
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "dataset": "WUSTL-EHMS-2020",
+  "source": "Hady et al. 2020, real medical IoT testbed traffic",
+  "rows_total": 16318,
+  "train_size": 13054,
+  "test_size": 3264,
+  "accuracy": 0.9498,
+  "roc_auc": 0.9555,
+  "macro_f1": 0.8753,
+  "attack_precision": 0.8679,
+  "attack_recall": 0.7066,
+  "confusion_matrix": [
+    [
+      2811,
+      44
+    ],
+    [
+      120,
+      289
+    ]
+  ],
+  "top_features": [
+    [
+      "DIntPkt",
+      0.1302
+    ],
+    [
+      "DstJitter",
+      0.13
+    ],
+    [
+      "Sport",
+      0.079
+    ],
+    [
+      "Packet_num",
+      0.0708
+    ],
+    [
+      "Rate",
+      0.0659
+    ],
+    [
+      "SrcLoad",
+      0.0645
+    ],
+    [
+      "Load",
+      0.0609
+    ],
+    [
+      "Dur",
+      0.0569
+    ],
+    [
+      "SIntPkt",
+      0.0565
+    ],
+    [
+      "DstLoad",
+      0.0542
+    ]
+  ]
+}

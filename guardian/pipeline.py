@@ -8,6 +8,13 @@ Writes out/findings.json (dashboard input) and appends to out/history.json so
 the posture score can be plotted across runs. That trend line is the single
 most persuasive thing to show in a review: run it against the vulnerable stack,
 remediate, run it again, watch the line move.
+
+The report also carries an "iot_intrusion" section: results from the separate
+medical-IoT device-layer intrusion model (guardian/iot_model.py), trained on
+WUSTL-EHMS-2020. That model answers a different question on a different
+feature space than the AWS posture ranking above it, and is included whenever
+it has been trained (models/iot_metrics.json exists); the pipeline runs fine
+without it, so the AWS side of the assessment is never blocked on it.
 """
 
 from __future__ import annotations
@@ -61,6 +68,18 @@ def _demo_findings():
     return rows
 
 
+def _iot_summary(sample_size=15):
+    """Pull the medical-IoT intrusion model's metrics + a demo sample, if it
+    has been trained. Never raises -- a missing/untrained IoT model must not
+    break the AWS posture run."""
+    try:
+        from .iot_model import summary_for_dashboard
+        return summary_for_dashboard(sample_size=sample_size)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("IoT intrusion model summary unavailable: %s", exc)
+        return None
+
+
 def run(region="us-east-1", offline=False, use_nvd=False, profile=None):
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -81,6 +100,7 @@ def run(region="us-east-1", offline=False, use_nvd=False, profile=None):
     fails = sorted([f for f in findings if f["status"] == "FAIL"],
                    key=lambda f: -f.get("final_rank", f["risk_score"]))
     summary = posture(findings)
+    iot = _iot_summary()
 
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -97,6 +117,7 @@ def run(region="us-east-1", offline=False, use_nvd=False, profile=None):
         },
         "findings": fails,
         "passed": [f for f in findings if f["status"] == "PASS"],
+        "iot_intrusion": iot,
     }
 
     (OUT / "findings.json").write_text(json.dumps(report, indent=2, default=str))
@@ -125,6 +146,19 @@ def run(region="us-east-1", offline=False, use_nvd=False, profile=None):
         flag = " [anomaly]" if f.get("is_anomaly") else ""
         print(f"  {f['final_rank']:6.2f}  {f['check_id']:9s} {f['resource_id'][:34]:34s}"
               f" {f['severity']:8s} ai={f.get('ai_priority')}{flag}")
+
+    if iot:
+        m = iot["metrics"]
+        print(f"\nMedical IoT intrusion model ({m['dataset']})")
+        print(f"  Accuracy: {m['accuracy']:.4f}   ROC-AUC: {m.get('roc_auc')}"
+              f"   Attack recall: {m.get('attack_recall')}")
+        correct = sum(1 for r in (iot["sample_predictions"] or []) if r["correct"])
+        total = len(iot["sample_predictions"] or [])
+        print(f"  Live demo sample: {correct}/{total} held-out rows classified correctly")
+    else:
+        print("\nMedical IoT intrusion model: not trained yet "
+              "(run `python -m guardian.iot_model`)")
+
     print(f"\nWrote {OUT/'findings.json'}")
     return report
 
