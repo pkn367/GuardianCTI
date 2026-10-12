@@ -1,0 +1,42 @@
+{
+  "kev_matches": {
+    "s3": 4,
+    "ec2": 61,
+    "iam": 378,
+    "rds": 41,
+    "cloudtrail": 3,
+    "kms": 9,
+    "lambda": 3
+  },
+  "kev_total": 1717,
+  "cve_severity": {
+    "ec2": 8.4,
+    "rds": 7.9,
+    "iam": 8.1,
+    "lambda": 7.2,
+    "s3": 6.5,
+    "kms": 7.0,
+    "cloudtrail": 5.4
+  },
+  "attack_names": {
+    "T1552.005": "Cloud Instance Metadata API",
+    "T1021.004": "SSH",
+    "T1530": "Data from Cloud Storage",
+    "T1005": "Data from Local System",
+    "T1190": "Exploit Public-Facing Application",
+    "T1552": "Unsecured Credentials",
+    "T1070": "Indicator Removal",
+    "T1552.001": "Credentials In Files",
+    "T1621": "Multi-Factor Authentication Request Generation",
+    "T1098": "Account Manipulation",
+    "T1078": "Valid Accounts",
+    "T1486": "Data Encrypted for Impact",
+    "T1562.008": "Disable or Modify Cloud Logs",
+    "T1213": "Data from Information Repositories",
+    "T1485": "Data Destruction",
+    "T1021.001": "Remote Desktop Protocol",
+    "T1078.004": "Cloud Accounts"
+  },
+  "source": "live",
+  "fetched_at": "2026-09-22T07:09:01Z"
+}
