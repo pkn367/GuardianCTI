@@ -174,7 +174,15 @@ The strongest signals are packet-timing jitter and load irregularities (`DIntPkt
 
 ---
 
-## 06 — Quick Start
+## 06 — AWS Console Infrastructure Setup
+
+![Infrastructure](images/infra1.jpeg)
+![Infrastructure](images/infra2.jpeg)
+![Infrastructure](images/infra3.jpeg)
+
+---
+
+## 07 — Quick Start
 
 ```bash
 git clone https://github.com/pkn367/GuardianCTI.git && cd GuardianCTI
@@ -220,7 +228,7 @@ python -m guardian.pipeline      # re-run so the dashboard picks up the result
 
 ---
 
-## 07 — Project Structure
+## 08 — Project Structure
 
 ```
 GuardianCTI/
@@ -257,7 +265,7 @@ Supporting buckets: `guardian-ml-data-…` (dataset and `models/`) and a CloudFo
 
 ---
 
-## 08 — Project Status
+## 09 — Project Status
 
 <div align="center">
 
@@ -306,7 +314,7 @@ Supporting buckets: `guardian-ml-data-…` (dataset and `models/`) and a CloudFo
 
 ---
 
-## 09 — Cost and Data Safety
+## 10 — Cost and Data Safety
 
 > The target stack is empty S3 buckets, one security group and one uninvoked Lambda: effectively zero against the $50 lab budget. Don't add EC2, RDS or NAT Gateways unless demonstrating a specific check, and delete them the same session. Check the **Used $X of $50** counter in Canvas after every session.
 
@@ -314,7 +322,7 @@ Supporting buckets: `guardian-ml-data-…` (dataset and `models/`) and a CloudFo
 
 ---
 
-## 10 — Team
+## 11 — Team
 
 <div align="center">
 
@@ -356,7 +364,7 @@ Supporting buckets: `guardian-ml-data-…` (dataset and `models/`) and a CloudFo
 
 ---
 
-## 11 — References
+## 12 — References
 
 1. A. A. Hady, A. Ghubaish, T. Salman, D. Unal and R. Jain, "Intrusion Detection System for Healthcare Systems Using Medical and Network Data: A Comparison Study," *IEEE Access*, vol. 8, pp. 106576–106584, 2020.
 2. [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
